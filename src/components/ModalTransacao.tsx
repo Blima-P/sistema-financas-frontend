@@ -1,4 +1,3 @@
-// src/components/ModalTransacao.tsx
 import React, { useState } from 'react';
 import Input from './Input';
 
@@ -31,7 +30,7 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({ aberto, onClose, onSave
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
       <div className="relative bg-white p-6 rounded-lg shadow-xl w-full max-w-lg">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Nova Transação</h3>
         

@@ -1,18 +1,22 @@
-// src/pages/PaginaTransacoes.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import ModalTransacao from '../components/ModalTransacao';
-import axios from 'axios'; // Importar Axios
+import axios from 'axios';
+
+interface Transacao {
+  id: number;
+  data: string;
+  descricao: string;
+  valor: number;
+  tipo: 'Receita' | 'Despesa';
+  categoria: string;
+}
 
 const PaginaTransacoes: React.FC = () => {
   const [modalAberto, setModalAberto] = useState(false);
-  
-  const transacoesIniciais = [
-    { id: 1, data: '2025-11-08', descricao: 'Venda de Serviço A', valor: 3500.00, tipo: 'Receita', categoria: 'Serviços' },
-    { id: 2, data: '2025-11-09', descricao: 'Aluguel do Escritório', valor: -1500.00, tipo: 'Despesa', categoria: 'Custos Fixos' },
-    { id: 3, data: '2025-11-09', descricao: 'Compra de Material', valor: -150.00, tipo: 'Despesa', categoria: 'Materiais' },
-  ];
-  const [transacoes, setTransacoes] = useState(transacoesIniciais);
+  const [transacoes, setTransacoes] = useState<Transacao[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState<string | null>(null);
 
   const formatarValor = (valor: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -21,36 +25,82 @@ const PaginaTransacoes: React.FC = () => {
     }).format(valor);
   };
 
-  const lidarComSalvarTransacao = async (dados: any) => {
-    console.log('Dados prontos para envio:', dados);
-    
-    // Simulação da chamada POST com Axios
+  const carregarTransacoes = async () => {
+    setCarregando(true);
+    setErro(null);
     try {
         const token = localStorage.getItem('tokenAuth');
-        const resposta = await axios.post(
-            'http://localhost:8080/api/transacoes', // URL da API da Nicole
-            dados,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
+        const resposta = await axios.get<Transacao[]>(
+            'http://localhost:8080/api/transacoes', 
+            { headers: { Authorization: `Bearer ${token}` } }
         );
+        const dadosFormatados = resposta.data.map(t => ({
+            ...t,
+            valor: t.tipo === 'Despesa' ? -Math.abs(t.valor) : Math.abs(t.valor)
+        }));
         
-        // Simular a adição local após sucesso da API
-        const novaTransacao = {
-            ...resposta.data, // Idealmente, a API retorna o objeto completo
-            id: Date.now(), // Usamos Date.now() como ID temporário
-            valor: dados.tipo === 'DESPESA' ? -dados.valor : dados.valor,
-        };
-        setTransacoes([novaTransacao, ...transacoes]);
-        alert('Transação salva com sucesso!');
+        setTransacoes(dadosFormatados);
         
+    } catch (e) {
+        setErro('Não foi possível carregar as transações. O backend está ativo?');
+    } finally {
+        setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarTransacoes();
+  }, []);
+
+  const lidarComSalvarTransacao = async (dados: any) => {
+    try {
+        const token = localStorage.getItem('tokenAuth');
+        await axios.post(
+            'http://localhost:8080/api/transacoes', 
+            dados,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        carregarTransacoes(); 
     } catch (erro) {
-        console.error('Erro ao salvar transação:', erro);
         alert('Erro ao salvar transação. Verifique o console.');
     }
   };
+
+  const lidarComExclusao = async (id: number) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta transação?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('tokenAuth');
+      await axios.delete(
+        `http://localhost:8080/api/transacoes/${id}`, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setTransacoes(transacoes.filter(t => t.id !== id));
+      alert('Transação excluída com sucesso!');
+
+    } catch (erro) {
+      alert('Erro ao excluir transação. Verifique o console.');
+    }
+  };
+
+  if (carregando) {
+    return (
+        <Layout>
+            <div className="text-center p-12 text-lg text-indigo-600">Carregando transações...</div>
+        </Layout>
+    );
+  }
+
+  if (erro) {
+    return (
+        <Layout>
+            <div className="text-center p-12 text-red-600 font-bold">{erro}</div>
+        </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -90,10 +140,22 @@ const PaginaTransacoes: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{t.categoria}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                   <button className="text-indigo-600 hover:text-indigo-900 mr-3">✏️</button>
-                  <button className="text-red-600 hover:text-red-900">🗑️</button>
+                  <button 
+                    className="text-red-600 hover:text-red-900"
+                    onClick={() => lidarComExclusao(t.id)}
+                  >
+                    🗑️
+                  </button>
                 </td>
               </tr>
             ))}
+            {transacoes.length === 0 && (
+                <tr>
+                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                        Nenhuma transação encontrada. Clique em "+ Nova Transação" para começar.
+                    </td>
+                </tr>
+            )}
           </tbody>
         </table>
       </div>

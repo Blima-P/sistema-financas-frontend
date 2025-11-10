@@ -2,8 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import PaginaRegistro from './pages/PaginaRegistro';
 import DashboardPage from './pages/DashboardPage';
-import RotaProtegida from './components/RotaProtegida';
 import PaginaTransacoes from './pages/PaginaTransacoes';
+import RotaProtegida from './components/RotaProtegida';
 import './index.css';
 
 function App() {
@@ -17,6 +17,7 @@ function App() {
           path="/dashboard" 
           element={<RotaProtegida elemento={<DashboardPage />} />} 
         />
+        
         <Route 
           path="/transacoes" 
           element={<RotaProtegida elemento={<PaginaTransacoes />} />} 
