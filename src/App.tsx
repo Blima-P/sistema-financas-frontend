@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import PaginaRegistro from './pages/PaginaRegistro';
 import DashboardPage from './pages/DashboardPage';
 import RotaProtegida from './components/RotaProtegida';
+import PaginaTransacoes from './pages/PaginaTransacoes';
 import './index.css';
 
 function App() {
@@ -18,8 +19,9 @@ function App() {
         />
         <Route 
           path="/transacoes" 
-          element={<RotaProtegida elemento={<h1>Página de Transações</h1>} />} 
+          element={<RotaProtegida elemento={<PaginaTransacoes />} />} 
         />
+        
         <Route 
           path="/relatorios" 
           element={<RotaProtegida elemento={<h1>Página de Relatórios</h1>} />} 
