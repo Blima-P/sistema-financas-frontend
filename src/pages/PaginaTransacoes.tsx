@@ -1,9 +1,10 @@
+// src/pages/PaginaTransacoes.tsx
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import ModalTransacao from '../components/ModalTransacao';
-import axios from 'axios';
+import api from '../services/api'; // Importa a instância centralizada
 
-interface Transacao {
+export interface Transacao {
   id: number;
   data: string;
   descricao: string;
@@ -17,6 +18,7 @@ const PaginaTransacoes: React.FC = () => {
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
+  const [transacaoEmEdicao, setTransacaoEmEdicao] = useState<Transacao | null>(null);
 
   const formatarValor = (valor: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -29,11 +31,9 @@ const PaginaTransacoes: React.FC = () => {
     setCarregando(true);
     setErro(null);
     try {
-        const token = localStorage.getItem('tokenAuth');
-        const resposta = await axios.get<Transacao[]>(
-            'http://localhost:8080/api/transacoes', 
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
+        // Uso da instância 'api'
+        const resposta = await api.get<Transacao[]>('/transacoes'); 
+        
         const dadosFormatados = resposta.data.map(t => ({
             ...t,
             valor: t.tipo === 'Despesa' ? -Math.abs(t.valor) : Math.abs(t.valor)
@@ -52,17 +52,37 @@ const PaginaTransacoes: React.FC = () => {
     carregarTransacoes();
   }, []);
 
-  const lidarComSalvarTransacao = async (dados: any) => {
+  const fecharModal = () => {
+    setModalAberto(false);
+    setTransacaoEmEdicao(null);
+  };
+
+  const abrirModalParaCriacao = () => {
+    setTransacaoEmEdicao(null); 
+    setModalAberto(true);
+  };
+
+  const abrirModalParaEdicao = (transacao: Transacao) => {
+    setTransacaoEmEdicao(transacao); 
+    setModalAberto(true);
+  };
+
+  const lidarComSalvarTransacao = async (dados: any, isEdicao: boolean) => {
     try {
-        const token = localStorage.getItem('tokenAuth');
-        await axios.post(
-            'http://localhost:8080/api/transacoes', 
-            dados,
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
+        if (isEdicao) {
+            // ROTA DE EDIÇÃO (PUT)
+            await api.put(`/transacoes/${dados.id}`, dados);
+            alert('Transação atualizada com sucesso!');
+        } else {
+            // ROTA DE CRIAÇÃO (POST)
+            await api.post('/transacoes', dados);
+            alert('Transação criada com sucesso!');
+        }
+        
         carregarTransacoes(); 
+        
     } catch (erro) {
-        alert('Erro ao salvar transação. Verifique o console.');
+        alert(`Erro ao ${isEdicao ? 'atualizar' : 'salvar'} transação.`);
     }
   };
 
@@ -72,11 +92,8 @@ const PaginaTransacoes: React.FC = () => {
     }
 
     try {
-      const token = localStorage.getItem('tokenAuth');
-      await axios.delete(
-        `http://localhost:8080/api/transacoes/${id}`, 
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // ROTA DE EXCLUSÃO (DELETE)
+      await api.delete(`/transacoes/${id}`);
 
       setTransacoes(transacoes.filter(t => t.id !== id));
       alert('Transação excluída com sucesso!');
@@ -85,6 +102,7 @@ const PaginaTransacoes: React.FC = () => {
       alert('Erro ao excluir transação. Verifique o console.');
     }
   };
+
 
   if (carregando) {
     return (
@@ -108,7 +126,7 @@ const PaginaTransacoes: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-800">Minhas Transações</h2>
         <button 
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
-          onClick={() => setModalAberto(true)}
+          onClick={abrirModalParaCriacao}
         >
           + Nova Transação
         </button>
@@ -139,7 +157,12 @@ const PaginaTransacoes: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{t.categoria}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                  <button className="text-indigo-600 hover:text-indigo-900 mr-3">✏️</button>
+                  <button 
+                    className="text-indigo-600 hover:text-indigo-900 mr-3"
+                    onClick={() => abrirModalParaEdicao(t)}
+                  >
+                    ✏️
+                  </button>
                   <button 
                     className="text-red-600 hover:text-red-900"
                     onClick={() => lidarComExclusao(t.id)}
@@ -162,8 +185,9 @@ const PaginaTransacoes: React.FC = () => {
 
       <ModalTransacao
         aberto={modalAberto}
-        onClose={() => setModalAberto(false)}
+        onClose={fecharModal}
         onSave={lidarComSalvarTransacao}
+        transacaoInicial={transacaoEmEdicao}
       />
 
     </Layout>

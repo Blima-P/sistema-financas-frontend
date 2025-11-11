@@ -1,38 +1,64 @@
-import React, { useState } from 'react';
+// src/components/ModalTransacao.tsx
+import React, { useState, useEffect } from 'react';
 import Input from './Input';
+import type { Transacao } from '../pages/PaginaTransacoes';
 
 interface ModalTransacaoProps {
   aberto: boolean;
   onClose: () => void;
-  onSave: (dados: any) => void;
+  transacaoInicial: Transacao | null;
+  onSave: (dados: any, isEdicao: boolean) => void;
 }
 
-const ModalTransacao: React.FC<ModalTransacaoProps> = ({ aberto, onClose, onSave }) => {
+const ModalTransacao: React.FC<ModalTransacaoProps> = ({ aberto, onClose, transacaoInicial, onSave }) => {
   const [descricao, setDescricao] = useState('');
   const [valor, setValor] = useState('');
   const [tipo, setTipo] = useState('RECEITA'); 
   const [categoria, setCategoria] = useState('');
   const [data, setData] = useState('');
 
+  useEffect(() => {
+    if (transacaoInicial) {
+      setDescricao(transacaoInicial.descricao);
+      setValor(Math.abs(transacaoInicial.valor).toFixed(2)); 
+      setTipo(transacaoInicial.tipo.toUpperCase());
+      setCategoria(transacaoInicial.categoria);
+      setData(transacaoInicial.data); 
+    } else {
+      setDescricao('');
+      setValor('');
+      setTipo('RECEITA');
+      setCategoria('');
+      setData('');
+    }
+  }, [transacaoInicial, aberto]);
+
   if (!aberto) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const isEdicao = !!transacaoInicial;
+    
     const dadosTransacao = {
+      id: isEdicao ? transacaoInicial.id : undefined,
       descricao,
       valor: parseFloat(valor),
       tipo,
       categoria,
       data,
     };
-    onSave(dadosTransacao);
-    onClose();
+    
+    onSave(dadosTransacao, isEdicao);
   };
+
+  const tituloModal = transacaoInicial ? 'Editar Transação' : 'Nova Transação';
+  const corBotao = transacaoInicial ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700';
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
       <div className="relative bg-white p-6 rounded-lg shadow-xl w-full max-w-lg">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">Nova Transação</h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-4">{tituloModal}</h3>
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -113,9 +139,9 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({ aberto, onClose, onSave
             </button>
             <button 
               type="submit" 
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+              className={`px-4 py-2 text-white rounded-md transition ${corBotao}`}
             >
-              Salvar Transação
+              {transacaoInicial ? 'Salvar Edição' : 'Salvar Transação'}
             </button>
           </div>
         </form>

@@ -1,43 +1,101 @@
-import React from 'react';
+// src/pages/DashboardPage.tsx
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
-import CartaoKPI from '../components/CartaoKPI';
+import api from '../services/api';
+import GraficoSaldoAnual from '../components/GraficoSaldoAnual'; // Importar o novo gráfico
+
+// Dados mock para simular o saldo anual antes da integração real da API
+const dadosMockSaldoAnual = [
+  { mes: 'Jan', saldo: 2500 },
+  { mes: 'Fev', saldo: 1800 },
+  { mes: 'Mar', saldo: 3500 },
+  { mes: 'Abr', saldo: 3100 },
+  { mes: 'Mai', saldo: 4200 },
+  { mes: 'Jun', saldo: 5500 },
+  { mes: 'Jul', saldo: 4800 },
+  { mes: 'Ago', saldo: 5900 },
+  { mes: 'Set', saldo: 6500 },
+  { mes: 'Out', saldo: 7200 },
+  { mes: 'Nov', saldo: 6800 },
+  { mes: 'Dez', saldo: 8000 },
+];
 
 const DashboardPage: React.FC = () => {
-  const dadosFinanceiros = {
-    saldoAtual: 5890.00,
-    receitasMes: 7500.00,
-    despesasMes: 1610.00,
+  const [totalReceitas, setTotalReceitas] = useState(0);
+  const [totalDespesas, setTotalDespesas] = useState(0);
+  const [saldo, setSaldo] = useState(0);
+  const [carregando, setCarregando] = useState(true);
+
+  // Função para buscar dados de resumo no backend
+  const carregarResumo = async () => {
+    try {
+      // Nota: Esta API de resumo ainda não existe no nosso backend, é um endpoint futuro
+      // Estamos simulando a busca para fins de estrutura
+      const resposta = await api.get('/resumo/atual'); 
+      
+      // Simulação: se a API for bem-sucedida, atualize os estados
+      setTotalReceitas(50000); 
+      setTotalDespesas(35000); 
+      setSaldo(15000); 
+
+    } catch (error) {
+      console.error("Erro ao carregar resumo do dashboard:", error);
+      // Mantém os valores simulados se houver erro
+      setTotalReceitas(50000); 
+      setTotalDespesas(35000); 
+      setSaldo(15000); 
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarResumo();
+  }, []);
+
+  const formatarValor = (valor: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(valor);
   };
 
   return (
     <Layout>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Visão Geral Mensal</h2>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard Financeiro</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Cards de Resumo */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         
-        <CartaoKPI 
-          titulo="Saldo Atual" 
-          valor={dadosFinanceiros.saldoAtual} 
-          corDestaque="verde" 
-        />
+        {/* Card Saldo Atual */}
+        <div className={`p-6 rounded-lg shadow-lg ${saldo >= 0 ? 'bg-indigo-50 border-indigo-200' : 'bg-red-50 border-red-200'}`}>
+          <p className="text-sm font-medium text-gray-500">Saldo Atual</p>
+          <p className={`text-3xl font-bold mt-1 ${saldo >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
+            {carregando ? '...' : formatarValor(saldo)}
+          </p>
+        </div>
         
-        <CartaoKPI 
-          titulo="Receitas do Mês" 
-          valor={dadosFinanceiros.receitasMes} 
-          corDestaque="indigo" 
-        />
-        
-        <CartaoKPI 
-          titulo="Despesas do Mês" 
-          valor={dadosFinanceiros.despesasMes} 
-          corDestaque="vermelho" 
-        />
-        
+        {/* Card Total Receitas */}
+        <div className="p-6 rounded-lg shadow-lg bg-green-50 border-green-200">
+          <p className="text-sm font-medium text-gray-500">Total Receitas (Mês)</p>
+          <p className="text-3xl font-bold text-green-600 mt-1">
+            {carregando ? '...' : formatarValor(totalReceitas)}
+          </p>
+        </div>
+
+        {/* Card Total Despesas */}
+        <div className="p-6 rounded-lg shadow-lg bg-red-50 border-red-200">
+          <p className="text-sm font-medium text-gray-500">Total Despesas (Mês)</p>
+          <p className="text-3xl font-bold text-red-600 mt-1">
+            {carregando ? '...' : formatarValor(totalDespesas)}
+          </p>
+        </div>
       </div>
-      
-      <div className="mt-8 bg-white p-6 rounded-lg shadow-md h-96">
-        <h3 className="text-lg font-semibold mb-4">Distribuição de Gastos</h3>
-        <p className="text-gray-400">Placeholder para o componente de gráfico (futuramente será carregado aqui).</p>
+
+      {/* Área do Gráfico de Saldo Anual */}
+      <div className="bg-white p-6 rounded-lg shadow-lg h-[400px]"> 
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Evolução do Saldo (Visão Anual)</h2>
+        <GraficoSaldoAnual dados={dadosMockSaldoAnual} /> {/* Componente Integrado */}
       </div>
       
     </Layout>
