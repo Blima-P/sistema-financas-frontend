@@ -29,9 +29,9 @@ const CartaoKPI: React.FC<CartaoKPIProps> = ({ titulo, valor, corDestaque }) => 
   }).format(valor);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
-      <p className="text-sm font-medium text-gray-500">{titulo}</p>
-      <p className={`mt-1 text-3xl font-extrabold ${classeCorValor}`}>
+    <div className="card">
+      <p className="text-sm font-medium muted">{titulo}</p>
+      <p className={`mt-2 text-3xl font-extrabold ${classeCorValor}`}>
         {valorFormatado}
       </p>
     </div>

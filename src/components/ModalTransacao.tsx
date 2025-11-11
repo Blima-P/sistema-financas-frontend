@@ -75,57 +75,63 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
   };
 
   return (
-    // Backdrop
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    // Backdrop with fade-in
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       {/* Container do Modal */}
-      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg mx-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          {transacaoParaEditar ? 'Editar Transação' : 'Nova Transação'}
-        </h2>
-        
+      <div className="card-hero w-full max-w-md mx-auto animate-in fade-in zoom-in duration-200">
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">
+            {transacaoParaEditar ? '✏️ Editar Transação' : '➕ Nova Transação'}
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">Preencha os dados da transação</p>
+        </div>
+
         {/* Formulário */}
-        <form onSubmit={handleSubmit}>
-          
-          {/* Campo Tipo (Botões de Rádio) */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-            <div className="flex space-x-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="tipo"
-                  value="RECEITA"
-                  checked={tipo === 'RECEITA'}
-                  onChange={() => setTipo('RECEITA')}
-                  className="form-radio text-green-600"
-                />
-                <span className="ml-2 text-green-600 font-semibold">Receita</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="tipo"
-                  value="DESPESA"
-                  checked={tipo === 'DESPESA'}
-                  onChange={() => setTipo('DESPESA')}
-                  className="form-radio text-red-600"
-                />
-                <span className="ml-2 text-red-600 font-semibold">Despesa</span>
-              </label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+
+          {/* Campo Tipo - Botões modernos */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-3">Tipo de Transação</label>
+            <div className="flex gap-2">
+              <button 
+                type="button" 
+                onClick={() => setTipo('RECEITA')} 
+                className={`flex-1 px-4 py-2.5 rounded-xl font-semibold transition-all duration-150 ${
+                  tipo === 'RECEITA' 
+                    ? 'bg-green-500 text-white shadow-md' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                💰 Receita
+              </button>
+              <button 
+                type="button" 
+                onClick={() => setTipo('DESPESA')} 
+                className={`flex-1 px-4 py-2.5 rounded-xl font-semibold transition-all duration-150 ${
+                  tipo === 'DESPESA' 
+                    ? 'bg-red-500 text-white shadow-md' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                💸 Despesa
+              </button>
             </div>
           </div>
-          
-          <Input 
+
+          {/* Campo Descrição */}
+          <Input
             id="descricao"
             rotulo="Descrição"
             type="text"
-            placeholder="Ex: Aluguel, Salário, etc."
+            placeholder="Ex: Salário, Aluguel, Comida..."
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
             required
           />
 
-          <Input 
+          {/* Campo Valor */}
+          <Input
             id="valor"
             rotulo="Valor (R$)"
             type="number"
@@ -136,9 +142,10 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
             required
           />
 
-          <Input 
+          {/* Campo Data */}
+          <Input
             id="data"
-            rotulo="Data"
+            rotulo="Data da Transação"
             type="date"
             value={data}
             onChange={(e) => setData(e.target.value)}
@@ -146,15 +153,15 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
           />
 
           {/* Dropdown Categoria */}
-          <div className="mb-6">
-            <label htmlFor="categoria" className="block text-sm font-medium text-gray-700">
+          <div>
+            <label htmlFor="categoria" className="block text-sm font-semibold text-gray-800 mb-2">
               Categoria
             </label>
             <select
               id="categoria"
               value={categoriaId}
               onChange={(e) => setCategoriaId(parseInt(e.target.value))}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="select-modern"
               required
             >
               {mockCategorias.map(cat => (
@@ -165,24 +172,22 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
             </select>
           </div>
 
-          {/* Botões */}
-          <div className="flex justify-end space-x-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+          {/* Botões - Action Footer */}
+          <div className="flex gap-3 pt-4 border-t border-[var(--border)]">
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className="flex-1 btn-secondary" 
               disabled={carregando}
             >
               Cancelar
             </button>
-            <button
-              type="submit"
-              className={`py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white ${
-                tipo === 'RECEITA' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50`}
+            <button 
+              type="submit" 
+              className={`flex-1 btn-primary ${carregando ? 'opacity-60 pointer-events-none' : ''}`} 
               disabled={carregando}
             >
-              {carregando ? 'Salvando...' : (transacaoParaEditar ? 'Salvar Edição' : 'Salvar Transação')}
+              {carregando ? '⏳ Salvando...' : (transacaoParaEditar ? '💾 Salvar Edição' : '💾 Salvar')}
             </button>
           </div>
         </form>
