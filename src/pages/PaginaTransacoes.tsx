@@ -80,68 +80,103 @@ const PaginaTransacoes: React.FC = () => {
 
     return (
         <Layout>
-            <div className="p-6">
-                <h1 className="text-3xl font-bold mb-6 text-gray-800">Transações</h1>
-                
-                <div className="flex justify-end mb-4">
+            <div className="max-w-7xl mx-auto">
+                {/* Page Header */}
+                <div className="mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">💳 Transações</h1>
+                    <p className="text-gray-500">Gerencie todas as suas transações financeiras</p>
+                </div>
+
+                {/* Action Bar */}
+                <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-600">Total: <span className="font-bold text-gray-900">{transacoes.length}</span> transações</span>
+                    </div>
                     <button
                         onClick={() => { setTransacaoParaEditar(null); setModalAberto(true); }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+                        className="btn-primary"
                     >
-                        + Nova Transação
+                        ➕ Nova Transação
                     </button>
                 </div>
 
-                {/* Tabela de Transações */}
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {transacoes.length > 0 ? (
-                                transacoes.map((t) => (
-                                    <tr key={t.id} className={t.tipo === 'RECEITA' ? 'bg-green-50' : 'bg-red-50'}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{t.data}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{t.descricao}</td>
-                                        <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${t.tipo === 'RECEITA' ? 'text-green-600' : 'text-red-600'}`}>
-                                            R$ {t.valor.toFixed(2)}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{t.tipo}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{t.categoriaId}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button 
-                                                onClick={() => lidarComEditar(t)}
-                                                className="text-indigo-600 hover:text-indigo-900 mr-3"
-                                            >
-                                                Editar
-                                            </button>
-                                            <button 
-                                                onClick={() => lidarComDeletar(t.id)}
-                                                className="text-red-600 hover:text-red-900"
-                                            >
-                                                Deletar
-                                            </button>
-                                        </td>
+                {/* Transações Table */}
+                {transacoes.length > 0 ? (
+                    <div className="card">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-[var(--border)]">
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">📅 Data</th>
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">📝 Descrição</th>
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">💰 Valor</th>
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">📊 Tipo</th>
+                                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">🏷️ Categoria</th>
+                                        <th className="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Ações</th>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
-                                        Nenhuma transação encontrada. Clique em "Nova Transação" para começar.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                </thead>
+                                <tbody className="divide-y divide-[var(--border)]">
+                                    {transacoes.map((t) => (
+                                        <tr key={t.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {new Date(t.data).toLocaleDateString('pt-BR')}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-900">{t.descricao}</td>
+                                            <td className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${t.tipo === 'RECEITA' ? 'text-green-600' : 'text-red-600'}`}>
+                                                {t.tipo === 'RECEITA' ? '+' : '-'} R$ {t.valor.toFixed(2)}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                                    t.tipo === 'RECEITA' 
+                                                        ? 'bg-green-100 text-green-800' 
+                                                        : 'bg-red-100 text-red-800'
+                                                }`}>
+                                                    {t.tipo}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                {t.categoriaId === 1 ? 'Alimentação' :
+                                                 t.categoriaId === 2 ? 'Salário' :
+                                                 t.categoriaId === 3 ? 'Transporte' :
+                                                 t.categoriaId === 4 ? 'Moradia' :
+                                                 t.categoriaId === 5 ? 'Investimentos' : 'Outra'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <button 
+                                                        onClick={() => lidarComEditar(t)}
+                                                        className="btn-ghost text-sm"
+                                                        title="Editar transação"
+                                                    >
+                                                        ✏️ Editar
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => lidarComDeletar(t.id)}
+                                                        className="btn-ghost text-sm text-red-600 hover:bg-red-50"
+                                                        title="Deletar transação"
+                                                    >
+                                                        🗑️ Deletar
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="card text-center py-12">
+                        <p className="text-lg text-gray-500 mb-4">📭 Nenhuma transação encontrada</p>
+                        <p className="text-sm text-gray-400 mb-6">Comece criando sua primeira transação</p>
+                        <button
+                            onClick={() => { setTransacaoParaEditar(null); setModalAberto(true); }}
+                            className="btn-primary"
+                        >
+                            ➕ Nova Transação
+                        </button>
+                    </div>
+                )}
 
                 <ModalTransacao
                     aberto={modalAberto}

@@ -62,39 +62,60 @@ const DashboardPage: React.FC = () => {
 
   return (
     <Layout>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard Financeiro</h1>
-      
-      {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {/* Card Saldo Atual */}
-        <div className={`card ${saldo >= 0 ? 'border-indigo-100' : 'border-red-100'}`}>
-          <p className="text-sm font-medium muted">Saldo Atual</p>
-          <p className={`text-3xl font-bold mt-2 ${saldo >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
-            {carregando ? '...' : formatarValor(saldo)}
-          </p>
+      <div className="max-w-7xl mx-auto">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard Financeiro</h1>
+          <p className="text-gray-500">Acompanhe sua situação financeira em tempo real</p>
+        </div>
+        
+        {/* Cards de Resumo - KPI Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Card Saldo Atual */}
+          <div className={`card border-l-4 ${saldo >= 0 ? 'border-l-blue-500' : 'border-l-red-500'} hover-lift`}>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Saldo Atual</p>
+                <p className={`text-3xl font-bold mt-3 ${saldo >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                  {carregando ? '...' : formatarValor(saldo)}
+                </p>
+                <p className="text-xs text-gray-400 mt-2">Seu saldo disponível</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card Total Receitas */}
+          <div className="card border-l-4 border-l-green-500 hover-lift">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Receitas</p>
+                <p className="text-3xl font-bold text-green-600 mt-3">
+                  {carregando ? '...' : formatarValor(totalReceitas)}
+                </p>
+                <p className="text-xs text-gray-400 mt-2">Mês atual</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card Total Despesas */}
+          <div className="card border-l-4 border-l-red-500 hover-lift">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Despesas</p>
+                <p className="text-3xl font-bold text-red-600 mt-3">
+                  {carregando ? '...' : formatarValor(totalDespesas)}
+                </p>
+                <p className="text-xs text-gray-400 mt-2">Mês atual</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Card Total Receitas */}
-        <div className="card">
-          <p className="text-sm font-medium muted">Total Receitas (Mês)</p>
-          <p className="text-3xl font-bold text-green-600 mt-2">
-            {carregando ? '...' : formatarValor(totalReceitas)}
-          </p>
+        {/* Área do Gráfico de Saldo Anual */}
+        <div className="card-hero h-[450px]"> 
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Evolução do Saldo Anual</h2>
+          <GraficoSaldoAnual dados={dadosMockSaldoAnual} /> {/* Componente Integrado */}
         </div>
-
-        {/* Card Total Despesas */}
-        <div className="card">
-          <p className="text-sm font-medium muted">Total Despesas (Mês)</p>
-          <p className="text-3xl font-bold text-red-600 mt-2">
-            {carregando ? '...' : formatarValor(totalDespesas)}
-          </p>
-        </div>
-      </div>
-
-      {/* Área do Gráfico de Saldo Anual */}
-      <div className="card-hero h-[400px]"> 
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Evolução do Saldo (Visão Anual)</h2>
-        <GraficoSaldoAnual dados={dadosMockSaldoAnual} /> {/* Componente Integrado */}
       </div>
       
     </Layout>
