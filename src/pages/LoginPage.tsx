@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/useAuth';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email === 'teste@mail.com' && senha === '123456') {
-        login('mock-token');
+        login('mock-token'); // Simula login bem-sucedido
         navegar('/dashboard');
     } else {
         alert('Credenciais inválidas. Tente: teste@mail.com / 123456');
@@ -20,7 +20,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"> 
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">

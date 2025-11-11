@@ -1,10 +1,9 @@
-// src/App.tsx
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import PaginaRegistro from './pages/PaginaRegistro';
 import DashboardPage from './pages/DashboardPage';
 import PaginaTransacoes from './pages/PaginaTransacoes';
-import PaginaRelatorios from './pages/PaginaRelatorios'; // Importar
+import PaginaRelatorios from './pages/PaginaRelatorios';
 import RotaProtegida from './components/RotaProtegida';
 import './index.css';
 
@@ -25,7 +24,6 @@ function App() {
           element={<RotaProtegida elemento={<PaginaTransacoes />} />} 
         />
         
-        {/* ROTA ATUALIZADA */}
         <Route 
           path="/relatorios" 
           element={<RotaProtegida elemento={<PaginaRelatorios />} />} 

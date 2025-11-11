@@ -31,7 +31,7 @@ const DashboardPage: React.FC = () => {
     try {
       // Nota: Esta API de resumo ainda não existe no nosso backend, é um endpoint futuro
       // Estamos simulando a busca para fins de estrutura
-      const resposta = await api.get('/resumo/atual'); 
+      await api.get('/resumo/atual'); 
       
       // Simulação: se a API for bem-sucedida, atualize os estados
       setTotalReceitas(50000); 

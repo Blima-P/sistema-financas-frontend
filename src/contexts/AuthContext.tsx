@@ -1,16 +1,18 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { useState } from 'react';
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext, type AuthContextType } from './auth.context';
 
-interface AuthContextType {
-  estaAutenticado: boolean;
-  login: (token: string) => void;
-  logout: () => void;
+interface AuthProviderProps {
+    children: ReactNode;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const ProvedorAutenticacao: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [estaAutenticado, setEstaAutenticado] = useState(false);
+export const ProvedorAutenticacao: React.FC<AuthProviderProps> = ({ children }) => {
+  const [estaAutenticado, setEstaAutenticado] = useState<boolean>(() => {
+    const token = localStorage.getItem('tokenAuth');
+    return !!token; 
+  });
+  
   const navegar = useNavigate();
 
   const login = (token: string) => {
@@ -24,17 +26,11 @@ export const ProvedorAutenticacao: React.FC<{ children: ReactNode }> = ({ childr
     navegar('/');
   };
 
+  const value: AuthContextType = { estaAutenticado, login, logout };
+
   return (
-    <AuthContext.Provider value={{ estaAutenticado, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const contexto = useContext(AuthContext);
-  if (contexto === undefined) {
-    throw new Error('useAuth deve ser usado dentro de um ProvedorAutenticacao');
-  }
-  return contexto;
 };

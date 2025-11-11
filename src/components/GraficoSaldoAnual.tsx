@@ -11,8 +11,14 @@ interface GraficoSaldoAnualProps {
   dados: DadosSaldoAnual[];
 }
 
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  label?: string;
+}
+
 // Custom Tooltip para exibir valores formatados
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const valor = payload[0].value;
     const cor = valor >= 0 ? 'text-green-600' : 'text-red-600';
