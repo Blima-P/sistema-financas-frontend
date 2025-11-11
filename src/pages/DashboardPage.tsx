@@ -66,34 +66,33 @@ const DashboardPage: React.FC = () => {
       
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
         {/* Card Saldo Atual */}
-        <div className={`p-6 rounded-lg shadow-lg ${saldo >= 0 ? 'bg-indigo-50 border-indigo-200' : 'bg-red-50 border-red-200'}`}>
-          <p className="text-sm font-medium text-gray-500">Saldo Atual</p>
-          <p className={`text-3xl font-bold mt-1 ${saldo >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
+        <div className={`card ${saldo >= 0 ? 'border-indigo-100' : 'border-red-100'}`}>
+          <p className="text-sm font-medium muted">Saldo Atual</p>
+          <p className={`text-3xl font-bold mt-2 ${saldo >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
             {carregando ? '...' : formatarValor(saldo)}
           </p>
         </div>
-        
+
         {/* Card Total Receitas */}
-        <div className="p-6 rounded-lg shadow-lg bg-green-50 border-green-200">
-          <p className="text-sm font-medium text-gray-500">Total Receitas (Mês)</p>
-          <p className="text-3xl font-bold text-green-600 mt-1">
+        <div className="card">
+          <p className="text-sm font-medium muted">Total Receitas (Mês)</p>
+          <p className="text-3xl font-bold text-green-600 mt-2">
             {carregando ? '...' : formatarValor(totalReceitas)}
           </p>
         </div>
 
         {/* Card Total Despesas */}
-        <div className="p-6 rounded-lg shadow-lg bg-red-50 border-red-200">
-          <p className="text-sm font-medium text-gray-500">Total Despesas (Mês)</p>
-          <p className="text-3xl font-bold text-red-600 mt-1">
+        <div className="card">
+          <p className="text-sm font-medium muted">Total Despesas (Mês)</p>
+          <p className="text-3xl font-bold text-red-600 mt-2">
             {carregando ? '...' : formatarValor(totalDespesas)}
           </p>
         </div>
       </div>
 
       {/* Área do Gráfico de Saldo Anual */}
-      <div className="bg-white p-6 rounded-lg shadow-lg h-[400px]"> 
+      <div className="card-hero h-[400px]"> 
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Evolução do Saldo (Visão Anual)</h2>
         <GraficoSaldoAnual dados={dadosMockSaldoAnual} /> {/* Componente Integrado */}
       </div>

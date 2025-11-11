@@ -2,18 +2,73 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-/* Definir a cor de fundo do body/html como branco e garantir altura total */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #ffffff; /* Fundo branco garantido */
+
+/* Modern Apple-like design tokens and component utilities */
+@layer base {
+  :root {
+    --primary-500: #0071ff;
+    --primary-600: #005fd6;
+    --bg: #ffffff;
+    --muted: #6b6b6b;
+    --border: #e6e6ea;
+    --glass: rgba(255,255,255,0.6);
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg);
+  }
 }
 
-/* Garante que o div raiz (onde o React monta) ocupe toda a tela */
-#root {
-  min-height: 100vh;
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-[var(--primary-500)] text-white font-semibold shadow-sm hover:bg-[var(--primary-600)] active:scale-95 transition-transform;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-5 py-2 rounded-lg border border-[var(--border)] text-gray-800 bg-white hover:bg-gray-50;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center px-3 py-1.5 rounded-lg text-gray-700 hover:bg-gray-100;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white rounded-2xl border border-[var(--border)] shadow-sm p-6;
+  }
+
+  .card-hero {
+    @apply bg-white rounded-3xl shadow-lg p-8 border border-[var(--border)];
+  }
+
+  /* Inputs */
+  .input-modern {
+    @apply w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)];
+  }
+
+  /* Header */
+  .header-modern {
+    @apply bg-white border-b border-[var(--border)];
+  }
+
+  /* Utilities */
+  .muted { color: var(--muted); }
+}
+
+@layer utilities {
+  .glass {
+    background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));
+    backdrop-filter: blur(6px);
+  }
 }
