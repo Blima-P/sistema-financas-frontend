@@ -6,28 +6,53 @@
 /* Modern Apple-like design tokens and component utilities */
 @layer base {
   :root {
-    /* Color palette - inspired by Apple design */
+    /* Color palette - Modern Apple-inspired with subtle gradients */
     --primary-50: #f0f7ff;
-    --primary-100: #e0eeff;
+    --primary-100: #dceeff;
+    --primary-200: #b8deff;
+    --primary-300: #7dc9ff;
+    --primary-400: #41b8ff;
     --primary-500: #0071ff;
     --primary-600: #005fd6;
     --primary-700: #0056c1;
+    --primary-800: #003f8c;
     
-    --success: #34c759;
-    --warning: #ff9500;
-    --danger: #ff3b30;
+    /* Success - Modern green */
+    --success-50: #f0fdf4;
+    --success: #10b981;
+    --success-dark: #059669;
     
+    /* Warning - Modern amber */
+    --warning-50: #fffbeb;
+    --warning: #f59e0b;
+    --warning-dark: #d97706;
+    
+    /* Danger - Modern red */
+    --danger-50: #fef2f2;
+    --danger: #ef4444;
+    --danger-dark: #dc2626;
+    
+    /* Neutral - Refined grays */
     --bg: #ffffff;
-    --bg-secondary: #f5f5f7;
-    --muted: #6b6b6b;
-    --muted-light: #a1a1a6;
-    --border: #e6e6ea;
-    --border-light: #f0f0f3;
+    --bg-secondary: #f9f9fb;
+    --bg-tertiary: #f3f3f7;
     
-    /* Typography */
-    --font-display: 600;
-    --font-body: 400;
-    --font-accent: 500;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    
+    --muted: #6b7280;
+    --muted-light: #d1d5db;
+    
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --border-subtle: #fafafa;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   }
 
   html, body, #root {
@@ -238,4 +263,135 @@
   .border-muted {
     @apply border-[var(--border)];
   }
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes bounce-smooth {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 113, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 113, 255, 0.8);
+  }
+}
+
+/* === ANIMATION UTILITIES === */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  background-size: 1000px 100%;
+}
+
+.animate-bounce-smooth {
+  animation: bounce-smooth 2s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
 }
