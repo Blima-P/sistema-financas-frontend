@@ -76,46 +76,30 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
 
   return (
     // Backdrop
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       {/* Container do Modal */}
-      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg mx-4">
+      <div className="card-hero w-full max-w-lg mx-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           {transacaoParaEditar ? 'Editar Transação' : 'Nova Transação'}
         </h2>
-        
+
         {/* Formulário */}
         <form onSubmit={handleSubmit}>
-          
-          {/* Campo Tipo (Botões de Rádio) */}
+
+          {/* Campo Tipo (Botões de Rádio simples) */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-            <div className="flex space-x-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="tipo"
-                  value="RECEITA"
-                  checked={tipo === 'RECEITA'}
-                  onChange={() => setTipo('RECEITA')}
-                  className="form-radio text-green-600"
-                />
-                <span className="ml-2 text-green-600 font-semibold">Receita</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="tipo"
-                  value="DESPESA"
-                  checked={tipo === 'DESPESA'}
-                  onChange={() => setTipo('DESPESA')}
-                  className="form-radio text-red-600"
-                />
-                <span className="ml-2 text-red-600 font-semibold">Despesa</span>
-              </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setTipo('RECEITA')} className={`px-4 py-2 rounded-full ${tipo === 'RECEITA' ? 'bg-green-100 text-green-800' : 'bg-gray-50 text-gray-700'}`}>
+                Receita
+              </button>
+              <button type="button" onClick={() => setTipo('DESPESA')} className={`px-4 py-2 rounded-full ${tipo === 'DESPESA' ? 'bg-red-100 text-red-800' : 'bg-gray-50 text-gray-700'}`}>
+                Despesa
+              </button>
             </div>
           </div>
-          
-          <Input 
+
+          <Input
             id="descricao"
             rotulo="Descrição"
             type="text"
@@ -125,7 +109,7 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
             required
           />
 
-          <Input 
+          <Input
             id="valor"
             rotulo="Valor (R$)"
             type="number"
@@ -136,7 +120,7 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
             required
           />
 
-          <Input 
+          <Input
             id="data"
             rotulo="Data"
             type="date"
@@ -154,7 +138,7 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
               id="categoria"
               value={categoriaId}
               onChange={(e) => setCategoriaId(parseInt(e.target.value))}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 input-modern"
               required
             >
               {mockCategorias.map(cat => (
@@ -166,22 +150,11 @@ const ModalTransacao: React.FC<ModalTransacaoProps> = ({
           </div>
 
           {/* Botões */}
-          <div className="flex justify-end space-x-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-              disabled={carregando}
-            >
+          <div className="flex justify-end gap-3">
+            <button type="button" onClick={onClose} className="btn-secondary" disabled={carregando}>
               Cancelar
             </button>
-            <button
-              type="submit"
-              className={`py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white ${
-                tipo === 'RECEITA' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50`}
-              disabled={carregando}
-            >
+            <button type="submit" className={`btn-primary ${carregando ? 'opacity-60 pointer-events-none' : ''}`} disabled={carregando}>
               {carregando ? 'Salvando...' : (transacaoParaEditar ? 'Salvar Edição' : 'Salvar Transação')}
             </button>
           </div>
