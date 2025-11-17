@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/useAuth';
 import { LogOut, User } from 'lucide-react';
 
 const Cabecalho: React.FC = () => {
-  const { logout } = useAuth();
+  const { logout, nomeUsuario } = useAuth();
 
   return (
     <header className="flex items-center justify-between h-20 header-modern px-6 sticky top-0 z-50 bg-white animate-fade-in-down">
@@ -19,8 +19,8 @@ const Cabecalho: React.FC = () => {
       <div className="flex items-center gap-4">
         {/* User greeting */}
         <div className="text-right hidden sm:block animate-fade-in-left">
-          <p className="text-sm font-medium text-gray-900">Pedro Silva</p>
-          <p className="text-xs text-gray-500">Última acesso: Hoje</p>
+          <p className="text-sm font-medium text-gray-900">{nomeUsuario ?? 'Usuário'}</p>
+          <p className="text-xs text-gray-500">Último acesso: Hoje</p>
         </div>
 
         {/* Divider */}

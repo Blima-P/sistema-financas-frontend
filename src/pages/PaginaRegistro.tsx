@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
+import { useAuth } from '../contexts/useAuth';
 
 const PaginaRegistro: React.FC = () => {
   const [nome, setNome] = useState('');
@@ -8,13 +9,22 @@ const PaginaRegistro: React.FC = () => {
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
+  const navegar = useNavigate();
+  const { login } = useAuth();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (senha !== confirmarSenha) {
       alert('As senhas não coincidem!');
       return;
     }
-    console.log('Tentativa de Registro:', { nome, email, senha });
+
+    // Aqui você poderia chamar a API real de registro. Enquanto o backend
+    // não estiver integrado, simulamos registro bem-sucedido e efetuamos
+    // o login local passando o nome recebido do formulário.
+    console.log('Tentativa de Registro:', { nome, email });
+    login('mock-token', nome);
+    navegar('/dashboard');
   };
 
   return (

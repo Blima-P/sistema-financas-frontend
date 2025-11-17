@@ -12,21 +12,31 @@ export const ProvedorAutenticacao: React.FC<AuthProviderProps> = ({ children }) 
     const token = localStorage.getItem('tokenAuth');
     return !!token; 
   });
+
+  const [nomeUsuario, setNomeUsuario] = useState<string | null>(() => {
+    return localStorage.getItem('nomeUsuario');
+  });
   
   const navegar = useNavigate();
 
-  const login = (token: string) => {
+  const login = (token: string, nome?: string | null) => {
     localStorage.setItem('tokenAuth', token);
+    if (nome) {
+      localStorage.setItem('nomeUsuario', nome);
+      setNomeUsuario(nome);
+    }
     setEstaAutenticado(true);
   };
 
   const logout = () => {
     localStorage.removeItem('tokenAuth');
+    localStorage.removeItem('nomeUsuario');
+    setNomeUsuario(null);
     setEstaAutenticado(false);
     navegar('/');
   };
 
-  const value: AuthContextType = { estaAutenticado, login, logout };
+  const value: AuthContextType = { estaAutenticado, nomeUsuario, login, logout };
 
   return (
     <AuthContext.Provider value={value}>

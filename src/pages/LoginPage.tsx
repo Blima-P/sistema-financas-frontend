@@ -12,7 +12,8 @@ const LoginPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email === 'teste@mail.com' && senha === '123456') {
-        login('mock-token'); // Simula login bem-sucedido
+        // Simula login bem-sucedido e informa o nome do usuário
+        login('mock-token', 'Pedro Silva');
         navegar('/dashboard');
     } else {
         alert('Credenciais inválidas. Tente: teste@mail.com / 123456');
